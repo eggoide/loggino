@@ -1,0 +1,16 @@
+{
+    "database_url": "postgresql://postgres:secret@loggino_db:5432/loggino",
+    "log_limit": 20,
+    "fluent_bit_config_path": "/app/fluent-bit.conf",
+    "flask_port": 5001,
+    "flask_host": "0.0.0.0",
+    "app_version": "1.0.2",
+    "timestamp_cleaning_patterns": [
+        "^[A-Za-z]{3} \\d{1,2} \\d{2}:\\d{2}:\\d{2}",
+        "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?Z?",
+        "^\\d{4}/\\d{2}/\\d{2} \\d{2}:\\d{2}:\\d{2}",
+        "\\b[a-zA-Z0-9_-]+\\[\\d+\\]:",
+        "\\b[a-f0-9]{12,}\\b",
+        "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?[+-]\\d{2}:\\d{2}"
+    ]    
+}

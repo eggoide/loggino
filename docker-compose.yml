@@ -1,0 +1,45 @@
+
+services:
+  loggino_db:
+    image: postgres:latest
+    container_name: loggino_db
+    restart: always
+    environment:
+      POSTGRES_DB: loggino
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  fluent-bit:
+    image: fluent/fluent-bit:latest
+    container_name: fluent-bit
+    restart: always
+    depends_on:
+      - loggino_db    
+    volumes:
+      - ./fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
+      - ./parsers.conf:/fluent-bit/etc/parsers.conf:ro
+      - /miq_log:/var/log/miq_log:ro      
+      - /playground/db:/fluent-bit/db
+    command: ["/fluent-bit/bin/fluent-bit", "-c", "/fluent-bit/etc/fluent-bit.conf", "-vv"]
+
+  loggino:
+    build: .
+    container_name: loggino
+    restart: always
+    depends_on:
+      - loggino_db
+      - fluent-bit
+    volumes:
+      - ./loggino_config.json:/app/loggino_config.json:ro
+      - ./api_config.json:/app/api_config.json:ro
+      - ./templates:/app/templates:ro
+      - ./static:/app/static:ro
+    ports:
+      - "5001:5001"
+
+volumes:
+  pg_data:
